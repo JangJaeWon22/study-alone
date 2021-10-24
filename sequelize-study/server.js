@@ -1,10 +1,17 @@
 const express = require("express");
 const logger = require("morgan");
 const app = express();
-//react 연결지워야할 것
-// app.use("/", (req, res) => {
-//     return res.send(express.static(path.join(__dirname, "client/index.html")));
-//   });
+const { sequelize } = require("./models");
+// const userRouter = require("./routes/users");
+
+sequelize
+  .sync({ force: false })
+  .then(() => {
+    console.log("db 연결 성공");
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -12,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 
 //routing
-// app.use("/api");
+// app.use("/api", userRouter);
 
 //Error handler
 app.use(function (err, req, res, next) {

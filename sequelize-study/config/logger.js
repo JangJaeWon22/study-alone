@@ -10,7 +10,7 @@ const printFormat = printf(({ timestamp, label, level, message }) => {
 const printLogFormat = {
   file: combine(
     label({
-      label: "인스타그램 클론 코딩",
+      label: "Sequelize 공부",
     }),
     timestamp({
       format: "YYYY-MM-DD HH:MM:DD",
