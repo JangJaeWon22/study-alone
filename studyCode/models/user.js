@@ -1,42 +1,53 @@
-"use strict";
-const { Model } = require("sequelize");
-module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(db) {
-      db.User.hasMany(db.Post);
-      db.User.belongsToMany(db.User, {
-        foreignKey: "followingId",
-        as: "Followers",
-        through: "Follow",
-      });
-      db.User.belongsToMany(db.User, {
-        foreignKey: "followerId",
-        as: "Followings",
-        through: "Follow",
-      });
-    }
-  }
-  User.init(
-    {
-      email: DataTypes.STRING,
-      nick: DataTypes.STRING,
-      password: DataTypes.STRING,
-      provider: DataTypes.STRING,
-      snsId: DataTypes.STRING,
-    },
-    {
+const Sequelize = require('sequelize');
+
+module.exports = class User extends Sequelize.Model {
+  static init(sequelize) {
+    return super.init({
+      email: {
+        type: Sequelize.STRING(40),
+        allowNull: true,
+        unique: true,
+      },
+      nick: {
+        type: Sequelize.STRING(15),
+        allowNull: false,
+      },
+      password: {
+        type: Sequelize.STRING(100),
+        allowNull: true,
+      },
+      provider: {
+        type: Sequelize.STRING(10),
+        allowNull: false,
+        defaultValue: 'local',
+      },
+      snsId: {
+        type: Sequelize.STRING(30),
+        allowNull: true,
+      },
+    }, {
       sequelize,
-      modelName: "User",
       timestamps: true,
+      underscored: false,
+      modelName: 'User',
+      tableName: 'users',
       paranoid: true,
-      charset: "utf8",
-      collate: "utf8_general_ci",
-    }
-  );
-  return User;
+      charset: 'utf8',
+      collate: 'utf8_general_ci',
+    });
+  }
+
+  static associate(db) {
+    db.User.hasMany(db.Post);
+    db.User.belongsToMany(db.User, {
+      foreignKey: 'followingId',
+      as: 'Followers',
+      through: 'Follow',
+    });
+    db.User.belongsToMany(db.User, {
+      foreignKey: 'followerId',
+      as: 'Followings',
+      through: 'Follow',
+    });
+  }
 };

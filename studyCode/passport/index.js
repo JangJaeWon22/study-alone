@@ -1,20 +1,28 @@
-const passport = require("passport");
-const local = require("./localStrategy");
-const kakao = require("./kakaoStrategy");
-const { User } = require("../models");
+const passport = require('passport');
+const local = require('./localStrategy');
+const kakao = require('./kakaoStrategy');
+const User = require('../models/user');
 
-module.exprts = () => {
+module.exports = () => {
   passport.serializeUser((user, done) => {
-    //null -> err 발생시 사용
     done(null, user.id);
   });
 
-  // user.id -> id로 넘어옴
   passport.deserializeUser((id, done) => {
-    User.findOne({ where: { id } })
-      //req.user에 저장
-      .then((user) => done(null, user))
-      .catch((err) => done(err));
+    User.findOne({
+      where: { id },
+      include: [{
+        model: User,
+        attributes: ['id', 'nick'],
+        as: 'Followers',
+      }, {
+        model: User,
+        attributes: ['id', 'nick'],
+        as: 'Followings',
+      }],
+    })
+      .then(user => done(null, user))
+      .catch(err => done(err));
   });
 
   local();

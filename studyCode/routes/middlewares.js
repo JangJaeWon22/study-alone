@@ -1,19 +1,16 @@
-const Logged = {
-  isLoggedIn: (req, res, next) => {
-    if (req.isAuthenicated()) {
-      next();
-    } else {
-      res.status(403).send("로그인 필요");
-    }
-  },
-  isNotLoggedIn: (req, res, next) => {
-    if (!req.isAuthenicated()) {
-      next();
-    } else {
-      const message = encodeURLComponent("로그인한 상태입니다.");
-      res.redirect(`/?err=${message}`);
-    }
-  },
+exports.isLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.status(403).send('로그인 필요');
+  }
 };
 
-module.exports = { Logged };
+exports.isNotLoggedIn = (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    next();
+  } else {
+    const message = encodeURIComponent('로그인한 상태입니다.');
+    res.redirect(`/?error=${message}`);
+  }
+};
