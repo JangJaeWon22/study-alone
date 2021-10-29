@@ -1,8 +1,11 @@
 const app = require("./server");
 const logger = require("./config/logger");
 const dotenv = require("dotenv");
-dotenv.config();
 const port = process.env.EXPRESS_PORT;
+const passport = require("passport");
+
+dotenv.config(); //dotenv 연결
+passport(); //passport 연결
 
 //test용 시작 view page
 app.set("views", __dirname + "/views");

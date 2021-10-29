@@ -8,25 +8,34 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(db) {
-      db.User.hasMany(db.Comment, {
-        foreignKey: "commenter",
-        sourceKey: "name",
+      db.User.hasMany(db.Post);
+      db.User.belongsToMany(db.User, {
+        foreignKey: "followingId",
+        as: "Followers",
+        through: "Follow",
+      });
+      db.User.belongsToMany(db.User, {
+        foreignKey: "followerId",
+        as: "Followings",
+        through: "Follow",
       });
     }
   }
   User.init(
     {
-      name: {
-        primaryKey: true,
-        type: DataTypes.STRING,
-      },
-      age: DataTypes.INTEGER,
-      married: DataTypes.BOOLEAN,
-      comment: DataTypes.TEXT,
+      email: DataTypes.STRING,
+      nick: DataTypes.STRING,
+      password: DataTypes.STRING,
+      provider: DataTypes.STRING,
+      snsId: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "User",
+      timestamps: true,
+      paranoid: true,
+      charset: "utf8",
+      collate: "utf8_general_ci",
     }
   );
   return User;
