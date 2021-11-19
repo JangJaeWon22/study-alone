@@ -11,6 +11,14 @@ on:
 
 jobs:
   build:
+    runs=on: ubuntu-latest
+    steps:
+      - users: actions/checkout@v2
+      - name: npm install and build webpack
+        run: npm install
+          npm run build
+
+  test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -25,7 +33,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
+      - name: npm install and test
+        run: 
+        npm install
+        npm test
+        env:
+          CI: true
+
